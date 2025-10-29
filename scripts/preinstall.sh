@@ -30,16 +30,21 @@ else
 
     (
         # Build Curl
-        cd curl-$CURL_VERSION && \
-            ./buildconf && \
-            ./configure \
-                --prefix "$ARTIFACTS_DIR" \
-                --disable-shared \
-                --without-ssl \
-                --with-pic \
-                --without-zlib && \
-            make && \
-            make install
+        cd curl-$CURL_VERSION;
+        echo "PREARING curl"
+        ./buildconf;
+        echo "CONFIGURE curl"
+        ./configure \
+            --prefix "$ARTIFACTS_DIR" \
+            --disable-shared \
+            --without-ssl \
+            --with-pic \
+            --without-zlib
+        echo "MAKING curl"
+        make -d
+        echo "INSTALLING curl"
+        make -d install
+        echo "DONE curl"
     )
 
     (
@@ -47,11 +52,17 @@ else
         mkdir -p ./aws-lambda-cpp-$AWS_LAMBDA_CPP_RELEASE/build && \
             cd ./aws-lambda-cpp-$AWS_LAMBDA_CPP_RELEASE/build
 
+        echo "CMAKE aws-cpp"
         $CMAKE .. \
                 -DCMAKE_CXX_FLAGS="-fPIC" \
                 -DCMAKE_INSTALL_PREFIX="$ARTIFACTS_DIR" \
                 -DENABLE_LTO=$ENABLE_LTO \
-                -DCMAKE_MODULE_PATH="$ARTIFACTS_DIR"/lib/pkgconfig && \
-            make && make install
+                -DCMAKE_MODULE_PATH="$ARTIFACTS_DIR"/lib/pkgconfig
+                
+        echo "MAKING aws-cpp"
+        make -d
+        echo "INSTALLING aws-cpp"
+        make -d install
+        echo "DONE aws-cpp"
     )
 fi
